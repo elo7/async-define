@@ -33,9 +33,9 @@ define = (function() {
     var define_queue = {};
     var anonymous_count = 0;
 
-	return function _define(/* name, dependencies, factory */) {
-		var params = [],
-		    i = 0,
+    return function _define(/* name, dependencies, factory */) {
+        var params = [],
+            i = 0,
 
             // extract arguments
             argv = arguments,
@@ -46,28 +46,28 @@ define = (function() {
             dependencies = argc > 1? argv[argc - 2] : [],
             factory = argv[argc - 1];
 
-		// find params
-		for (i = 0; i < dependencies.length; i++) {
-			if (!modules.hasOwnProperty(dependencies[i])) {
+        // find params
+        for (i = 0; i < dependencies.length; i++) {
+            if (!modules.hasOwnProperty(dependencies[i])) {
 
                 // put in queue if it's the first time
                 if (!define_queue.hasOwnProperty(name)) {
-				    define_queue[name] = [name, dependencies, factory];
+                    define_queue[name] = [name, dependencies, factory];
                 }
 
-				return;
-			} else {
-				params.push(modules[dependencies[i]]);
-			}
-		}
+                return;
+            } else {
+                params.push(modules[dependencies[i]]);
+            }
+        }
 
-		// execute
-		modules[name] = factory.apply(window, params);
+        // execute
+        modules[name] = factory.apply(window, params);
         delete define_queue[name];
 
-		// execute others in queue
-		for (name in define_queue) {
+        // execute others in queue
+        for (name in define_queue) {
             _define.apply(window, define_queue[name]);
-		}
-	}
+        }
+    }
 })();

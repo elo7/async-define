@@ -22,52 +22,69 @@
 
     Advantages:
 
-    - Very small (~250 bytes gzipped) so you can inline ir on every page.
+    - Very small (~250 bytes) so you can inline it on every page.
     - Don't expect your modules to be loaded in a specific order.
     - Allows asynchronous loading of your files for maximum performance.
     - Very simple.
     
  */
 define = (function() {
-    var modules = {};
+    // object with all executes modules (module_name => module_value)
+    var modules = {}; 
+
+    // (dependency_name => [modules])
     var define_queue = {};
-    var anonymous_count = 0;
 
-    return function _define(/* name, dependencies, factory */) {
-        var params = [],
-            i = 0,
-
+    // the 'define' function
+    function _define(/* name, dependencies, factory */) {
+        var 
             // extract arguments
             argv = arguments,
             argc = argv.length,
 
             // extract arguments from function call - (name?, modules?, factory)
-            name = argc == 3? argv[0] : '_anon' + anonymous_count++,
-            dependencies = argc > 1? argv[argc - 2] : [],
-            factory = argv[argc - 1];
+            name = argv[argc - 3],
+            dependencies = argv[argc - 2] || [],
+            factory = argv[argc - 1],
+
+            // helper variables
+            params = [],
+            dependencies_satisfied = true,
+            dependency_name,
+            i = 0;
 
         // find params
-        for (i = 0; i < dependencies.length; i++) {
-            if (!modules.hasOwnProperty(dependencies[i])) {
+        for (; i < dependencies.length; i++) {
+            dependency_name = dependencies[i];
 
-                // put in queue if it's the first time
-                if (!define_queue.hasOwnProperty(name)) {
-                    define_queue[name] = [name, dependencies, factory];
-                }
-
-                return;
+            // if this dependency exists, push it to param injection
+            if (modules.hasOwnProperty(dependency_name)) {
+                params.push(modules[dependency_name]);
             } else {
-                params.push(modules[dependencies[i]]);
+                // no module found. save these arguments for future execution.
+                define_queue[dependency_name] = define_queue[dependency_name] || [];
+                define_queue[dependency_name].push(argv);
+
+                dependencies_satisfied = false;
             }
         }
 
-        // execute
-        modules[name] = factory.apply(window, params);
-        delete define_queue[name];
+        // all dependencies are satisfied, so proceed
+        if (dependencies_satisfied) {
 
-        // execute others in queue
-        for (name in define_queue) {
-            _define.apply(window, define_queue[name]);
+            // execute this module
+            modules[name] = factory.apply(this, params);
+
+            // execute others waiting for this module
+            while (define_queue[name] && (argv = define_queue[name].pop())) {
+                _define.apply(this, argv);
+            }
         }
     }
+
+    // register this as AMD compatible
+    _define.amd = { jQuery: true };
+
+    // exports the define function
+    return _define;
 })();

@@ -28,7 +28,7 @@
     - Very simple.
     
  */
-define = (function() {
+(function() {
     // object with all executes modules (module_name => module_value)
     var modules = {}; 
 
@@ -36,7 +36,7 @@ define = (function() {
     var define_queue = {};
 
     // the 'define' function
-    function _define(/* name, dependencies, factory */) {
+    function _define(/* reexecuting?, name, dependencies, factory */) {
         var 
             // extract arguments
             argv = arguments,
@@ -61,9 +61,11 @@ define = (function() {
             if (modules.hasOwnProperty(dependency_name)) {
                 params.push(modules[dependency_name]);
             } else {
-                // no module found. save these arguments for future execution.
-                define_queue[dependency_name] = define_queue[dependency_name] || [];
-                define_queue[dependency_name].push(argv);
+                if (argc != 4) { // if 4 values, is reexecuting
+                    // no module found. save these arguments for future execution.
+                    define_queue[dependency_name] = define_queue[dependency_name] || [];
+                    define_queue[dependency_name].push([0, name, dependencies, factory]);
+                }
 
                 dependencies_satisfied = false;
             }
@@ -82,9 +84,9 @@ define = (function() {
         }
     }
 
-    // register this as AMD compatible
+    // register this as AMD compatible (optional)
     _define.amd = { jQuery: true };
 
-    // exports the define function
-    return _define;
+    // exports the define function in global scope
+    define = _define;
 })();

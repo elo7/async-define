@@ -84,8 +84,10 @@
         // all dependencies are satisfied, so proceed
         if (dependencies_satisfied) {
 
-            // execute this module
-            modules[name] = factory.apply(this, params);
+            if(!modules.hasOwnProperty(name)) {
+              // execute this module
+              modules[name] = factory.apply(this, params);
+            }
 
             // execute others waiting for this module
             while (define_queue[name] && (argv = define_queue[name].pop())) {

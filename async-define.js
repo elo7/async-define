@@ -97,19 +97,20 @@
 
         // all dependencies are satisfied, so proceed
         if (dependencies_satisfied) {
-
             debug && console.log('all dependencies for', name, 'were satisfied; instantiating');
 
-            // execute this module
-            result = factory.apply(this, params);
+            if(!modules.hasOwnProperty(name)) {
+                // execute this module
+                result = factory.apply(this, params);
 
-            if (result) {
-                debug && console.log('module returned value');
-                modules[name] = result;
-            } else {
-                // assuming result is in exports object
-                debug && console.log('module did not return value; assuming exports was used');
-                modules[name] = exports;
+                if (result) {
+                    debug && console.log('module returned value');
+                    modules[name] = result;
+                } else {
+                    // assuming result is in exports object
+                    debug && console.log('module did not return value; assuming exports was used');
+                    modules[name] = exports;
+                }
             }
 
             // execute others waiting for this module
@@ -121,7 +122,6 @@
 
     // register this as AMD compatible (optional)
     _define.amd = { jQuery: true };
-
 
     // exports the define function in global scope
     define = _define;

@@ -53,6 +53,16 @@
             dependency_name,
             i = 0;
 
+        // config dependecies
+        if(_define.prototype.config_dependencies && _define.prototype.config_dependencies.constructor === Array) {
+          var config_dependencies = _define.prototype.config_dependencies || [];
+          var config_dependencies_index = config_dependencies.indexOf(name);
+          if(config_dependencies_index != -1) {
+            config_dependencies.splice(config_dependencies_index, 1);
+          }
+          dependencies = dependencies.concat(config_dependencies);
+        }
+
         // find params
         for (; i < dependencies.length; i++) {
             dependency_name = dependencies[i];
@@ -86,6 +96,7 @@
 
     // register this as AMD compatible (optional)
     _define.amd = { jQuery: true };
+
 
     // exports the define function in global scope
     define = _define;

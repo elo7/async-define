@@ -1,6 +1,6 @@
 {
   "name": "async-define",
-  "version": "v1.0.1-SNAPSHOT",
+  "version": "v1.0.2-SNAPSHOT",
   "description": "AMD-compatible async 'define' modularization.",
   "main": "async-define.js",
   "keywords": [

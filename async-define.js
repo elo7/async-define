@@ -43,7 +43,7 @@
             argc = argv.length,
 
             // extract arguments from function call - (name?, modules?, factory)
-            name = argv[argc - 3],
+            name = argv[argc - 3] || Math.floor(new Date().getTime() * (Math.random())), // if name is undefined or falsy value we add some timestamp like to name.
             dependencies = argv[argc - 2] || [],
             factory = argv[argc - 1],
 

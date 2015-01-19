@@ -61,11 +61,12 @@
         // config dependecies
         if(_define.prototype.config_dependencies && _define.prototype.config_dependencies.constructor === Array) {
           var config_dependencies = _define.prototype.config_dependencies || [];
-          var config_dependencies_index = config_dependencies.indexOf(name);
-          if(config_dependencies_index != -1) {
-            config_dependencies.splice(config_dependencies_index, 1);
+          var config_dependencies_size = config_dependencies.length;
+          for (var i = 0; i < config_dependencies_size; i++) {
+              if(name != config_dependencies[i]) {
+                dependencies.push(config_dependencies[i]);
+              }
           }
-          dependencies = dependencies.concat(config_dependencies);
         }
 
         debug && console.log('registering', name);

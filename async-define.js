@@ -55,8 +55,7 @@
             params = [],
             dependencies_satisfied = true,
             dependency_name,
-            result,
-            i = 0;
+            result;
 
         // config dependecies
         if(_define.prototype.config_dependencies && _define.prototype.config_dependencies.constructor === Array) {
@@ -64,9 +63,9 @@
 
             var config_dependencies_index = -1;
             var config_dependencies_size = config_dependencies.length;
-            for(var i = 0; i < config_dependencies_size; i++) {
-                if(name == config_dependencies[i]) {
-                    config_dependencies_index = i;
+            for(var config_dependencies_iterator = 0; config_dependencies_iterator < config_dependencies_size; config_dependencies_iterator++) {
+                if(name == config_dependencies[config_dependencies_iterator]) {
+                    config_dependencies_index = config_dependencies_iterator;
                 }
             }
             if(config_dependencies_index != -1) {
@@ -77,8 +76,8 @@
         debug && console.log('registering', name);
 
         // find params
-        for (; i < dependencies.length; i++) {
-            dependency_name = dependencies[i];
+        for (var dependencies_iterator=0; dependencies_iterator < dependencies.length; dependencies_iterator++) {
+            dependency_name = dependencies[dependencies_iterator];
             debug && console.log('dependency found on', dependency_name);
 
             // if this dependency exists, push it to param injection

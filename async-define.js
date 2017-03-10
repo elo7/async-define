@@ -129,10 +129,17 @@
             }
         }
 
+        function _undefine(name) {
+            if (name && modules[name]) {
+                delete modules[name];
+            }
+        }
+
         // register this as AMD compatible (optional)
         _define.amd = { jQuery: true };
 
-        // exports the define function in global scope
+        // exports the define and undefine functions in global scope
         define = _define;
+        undefine = _undefine;
     }
 })(false);

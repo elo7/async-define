@@ -16,16 +16,18 @@
         define(name, dependencies, factory)
         define(dependencies, factory)
         define(factory)
-
         where
             name - a string with your module name
             dependencies - an array listing your dependencies names
             factory - a function that receives your dependencies and returns the module result
 
+        undefine(name)
+        where
+            name - a string with a loaded module name that you want to remove from amd definition
 
     Advantages:
 
-    - Very small (~300 bytes w/ gzip and no debug) so you can inline it on every page.
+    - Very small (~400 bytes w/ gzip and no debug) so you can inline it on every page.
     - Don't expect your modules to be loaded in a specific order.
     - Allows asynchronous loading of your files for maximum performance.
     - Very simple.

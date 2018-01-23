@@ -41,6 +41,28 @@
         // (dependency_name => [modules])
         var define_queue = {};
 
+        var debug_timer = null;
+
+        function _log_debug(msg) {
+            console.log('%c [async-define] %c' + msg, 'font-weight: 500; color: #fdb933', 'color: #2ca75d');
+        }
+
+        function _set_debug_timer() {
+            if (debug_timer === null) {
+                _log_debug('A new module was registered; will monitor if it loads correctly.');
+                debug_timer = setInterval(function() {
+                    var entriesWaiting = Object.entries(define_queue).filter(queue => queue[1].length > 0);
+                    if (entriesWaiting.length > 0) {
+                        _log_debug('Modules waiting for a dependency: ' + entriesWaiting.map(entry => `${entry[0]}: [${entry[1].map(queue => queue[1])}]`).join('; '));
+                    } else {
+                        _log_debug('All modules loaded.');
+                        clearInterval(debug_timer);
+                        debug_timer = null;
+                    }
+                }, 1000);
+            }
+        }
+
         // the 'define' function
         function _define(/* <exports>, name, dependencies, factory */) {
             var
@@ -62,6 +84,8 @@
                 config_dependencies_iterator = 0,
                 dependencies_iterator = 0,
                 config_dependencies_index = -1;
+
+            _set_debug_timer();
 
             // config dependecies
             if (_define.prototype.config_dependencies && _define.prototype.config_dependencies.constructor === Array) {
@@ -90,7 +114,7 @@
                 } else if (dependency_name === 'exports') {
                     params.push(exports);
                 } else {
-                    if (argc != 4) { // if 4 values, is reexecuting
+                    if (argc !== 4) { // if 4 values, is reexecuting
                         // no module found. save these arguments for future execution.
                         define_queue[dependency_name] = define_queue[dependency_name] || [];
                         define_queue[dependency_name].push([exports, name, dependencies, factory]);

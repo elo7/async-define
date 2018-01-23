@@ -44,7 +44,7 @@
         var debug_timer = null;
 
         function _log_debug(msg) {
-            console.log('%c [async-define] %c' + msg, 'font-weight: 500; color: #fdb933', 'color: #2ca75d');
+            console.log('%c[async-define]%c ' + msg, 'color: #fdb933', 'color: #2ca75d');
         }
 
         function _set_debug_timer() {
@@ -53,7 +53,7 @@
                 debug_timer = setInterval(function() {
                     var entriesWaiting = Object.entries(define_queue).filter(queue => queue[1].length > 0);
                     if (entriesWaiting.length > 0) {
-                        _log_debug('Modules waiting for a dependency: ' + entriesWaiting.map(entry => `${entry[0]}: [${entry[1].map(queue => queue[1])}]`).join('; '));
+                        _log_debug('Modules waiting for a dependency:\n' + entriesWaiting.map(entry => ` - ${entry[0]}: [${entry[1].map(queue => queue[1]).join(', ')}]`).join('\n'));
                     } else {
                         _log_debug('All modules loaded.');
                         clearInterval(debug_timer);

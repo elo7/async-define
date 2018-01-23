@@ -34,6 +34,9 @@
 
  */
 (function() {
+    if (typeof DEVELOPMENT === "undefined") DEVELOPMENT = true;
+    if (typeof PRODUCTION === "undefined") PRODUCTION = false;
+
     if (typeof define == 'undefined') {
         // object with all executes modules (module_name => module_value)
         var modules = {};
@@ -41,52 +44,52 @@
         // (dependency_name => [modules])
         var define_queue = {};
 
-        // BEGIN debug
-        var debug_timer = null;
+        if (DEVELOPMENT) {
+            var debug_timer = null;
 
-        function _log_debug(msg) {
-            console.log('%c[async-define]%c ' + msg, 'color: #fdb933', 'color: #2ca75d');
-        }
-
-        function _get_queue_module_names(module_queue) {
-            var dependencies_names = [];
-            for (var dependency_iterator = 0; dependency_iterator < module_queue.length; dependency_iterator++) {
-                dependencies_names.push(module_queue[dependency_iterator][1]);
+            function _log_debug(msg) {
+                console.log('%c[async-define]%c ' + msg, 'color: #fdb933', 'color: #2ca75d');
             }
-            return dependencies_names;
-        }
 
-        function _build_modules_not_loaded_log_message(modules_not_loaded) {
-            var log_message = 'Modules not loaded yet:\n';
-            for (var module_not_loaded_iterator = 0; module_not_loaded_iterator < modules_not_loaded.length; module_not_loaded_iterator++) {
-                var module_not_loaded = modules_not_loaded[module_not_loaded_iterator];
-                var dependencies_names = _get_queue_module_names(define_queue[module_not_loaded]);
-                log_message += ' - ' + module_not_loaded + ': waited by [' + dependencies_names.join(', ') + ']\n';
+            function _get_queue_module_names(module_queue) {
+                var dependencies_names = [];
+                for (var dependency_iterator = 0; dependency_iterator < module_queue.length; dependency_iterator++) {
+                    dependencies_names.push(module_queue[dependency_iterator][1]);
+                }
+                return dependencies_names;
             }
-            return log_message;
-        }
 
-        function _set_debug_timer() {
-            if (debug_timer === null) {
-                _log_debug('A new module was registered; will monitor if it loads correctly.');
-                debug_timer = setInterval(function() {
-                    var modules_not_loaded = [];
-                    for (var module in define_queue) {
-                        if (define_queue[module].length > 0) {
-                            modules_not_loaded.push(module);
+            function _build_modules_not_loaded_log_message(modules_not_loaded) {
+                var log_message = 'Modules not loaded yet:\n';
+                for (var module_not_loaded_iterator = 0; module_not_loaded_iterator < modules_not_loaded.length; module_not_loaded_iterator++) {
+                    var module_not_loaded = modules_not_loaded[module_not_loaded_iterator];
+                    var dependencies_names = _get_queue_module_names(define_queue[module_not_loaded]);
+                    log_message += ' - ' + module_not_loaded + ': waited by [' + dependencies_names.join(', ') + ']\n';
+                }
+                return log_message;
+            }
+
+            function _set_debug_timer() {
+                if (debug_timer === null) {
+                    _log_debug('A new module was registered; will monitor if it loads correctly.');
+                    debug_timer = setInterval(function() {
+                        var modules_not_loaded = [];
+                        for (var module in define_queue) {
+                            if (define_queue[module].length > 0) {
+                                modules_not_loaded.push(module);
+                            }
                         }
-                    }
-                    if (modules_not_loaded.length > 0) {
-                        _log_debug(_build_modules_not_loaded_log_message(modules_not_loaded));
-                    } else {
-                        _log_debug('All modules loaded.');
-                        clearInterval(debug_timer);
-                        debug_timer = null;
-                    }
-                }, 1000);
+                        if (modules_not_loaded.length > 0) {
+                            _log_debug(_build_modules_not_loaded_log_message(modules_not_loaded));
+                        } else {
+                            _log_debug('All modules loaded.');
+                            clearInterval(debug_timer);
+                            debug_timer = null;
+                        }
+                    }, 1000);
+                }
             }
         }
-        // END debug
 
         // the 'define' function
         function _define(/* <exports>, name, dependencies, factory */) {
@@ -110,9 +113,9 @@
                 dependencies_iterator = 0,
                 config_dependencies_index = -1;
 
-            // BEGIN debug
-            _set_debug_timer();
-            // END debug
+            if (DEVELOPMENT) {
+                _set_debug_timer();
+            }
 
             // config dependecies
             if (_define.prototype.config_dependencies && _define.prototype.config_dependencies.constructor === Array) {

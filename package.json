@@ -9,7 +9,7 @@
     "JS"
   ],
   "scripts": {
-    "build": "sed '/BEGIN debug/,/END debug/d' async-define.js | uglifyjs --compress --mangle > async-define.min.js"
+    "build": "uglifyjs async-define.js --define PRODUCTION=true --define DEVELOPMENT=false --compress --mangle -o async-define.min.js"
   },
   "repository": {
     "type": "git",

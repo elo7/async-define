@@ -1,6 +1,6 @@
 {
   "name": "define-async",
-  "version": "v1.2.0",
+  "version": "v1.3.0",
   "description": "AMD-compatible async 'define' modularization.",
   "main": "async-define.js",
   "keywords": [
@@ -8,7 +8,10 @@
     "Asynchronous",
     "JS"
   ],
-    "repository": {
+  "scripts": {
+    "build": "uglifyjs async-define.js --define PRODUCTION=true --define DEVELOPMENT=false --compress --mangle -o async-define.min.js"
+  },
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/elo7/async-define"
   },
@@ -21,5 +24,8 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "devDependencies": {
+    "uglify-js": "3.3.8"
+  }
 }

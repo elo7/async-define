@@ -9,7 +9,8 @@
     "JS"
   ],
   "scripts": {
-    "build": "uglifyjs async-define.js --define PRODUCTION=true --define DEVELOPMENT=false --compress --mangle -o async-define.min.js"
+    "build": "uglifyjs async-define.js --define PRODUCTION=true --define DEVELOPMENT=false --compress --mangle -o async-define.min.js",
+    "test": "npm run build && [ \"$(grep -c console async-define.min.js)\" -eq 0 ]"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,6 @@
     "tests"
   ],
   "devDependencies": {
-    "uglify-js": "3.3.8"
+    "uglify-js": "3.3.25"
   }
 }
